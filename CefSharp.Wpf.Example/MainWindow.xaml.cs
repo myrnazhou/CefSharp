@@ -11,6 +11,8 @@ using CefSharp.Example;
 using CefSharp.Wpf.Example.Controls;
 using CefSharp.Wpf.Example.ViewModels;
 using Microsoft.Win32;
+using System.Collections.Generic;
+using System.Windows.Threading;
 
 namespace CefSharp.Wpf.Example
 {
@@ -185,6 +187,26 @@ namespace CefSharp.Wpf.Example
         private void Exit(object sender, ExecutedRoutedEventArgs e)
         {
             Close();
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var browserViewModel = BrowserTabs[TabControl.SelectedIndex];
+            Cef.UIThreadTaskFactory.StartNew(() =>
+            {
+                var requestContext = new RequestContext(new RequestContextSettings() { CachePath = "cache" });
+                var preferences = requestContext.GetAllPreferences(true);
+                var spellCheck = (Dictionary<string, object>)preferences["spellcheck"];
+                spellCheck["use_spelling_service"] = !(bool)spellCheck["use_spelling_service"];
+
+                string error = null;
+                var preference = requestContext.GetPreference("enable_do_not_track");
+                var preference2 = requestContext.GetPreference("spellcheck");
+
+                var hasPreference = requestContext.CanSetPreference("spellcheck");
+                var canSetPreference = requestContext.CanSetPreference("spellcheck");
+                requestContext.SetPreference("spellcheck", spellCheck, out error);
+            });
         }
     }
 }

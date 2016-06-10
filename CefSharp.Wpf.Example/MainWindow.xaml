@@ -31,6 +31,9 @@
                 <MenuItem Header="_Adobe Flash Demo" Command="controls:CefSharpCommands.OpenTabCommand" CommandParameter="http://www.adobe.com/software/flash/about/"/>
                 <MenuItem Header="_Print Current tab to PDF" Command="controls:CefSharpCommands.PrintTabToPdfCommand" />
                 <MenuItem Header="_Load Custom Request" Command="controls:CefSharpCommands.CustomCommand" CommandParameter="CustomRequest" />
+                <MenuItem Header="_Spell Check" Command="controls:CefSharpCommands.CustomCommand" CommandParameter="CustomRequest">
+                    <MenuItem Header="_Enable Spell Check" IsCheckable="True" Click="MenuItem_Click"/>
+                </MenuItem>
             </MenuItem>
         </Menu>
         <controls:NonReloadingTabControl x:Name="TabControl"
