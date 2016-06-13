@@ -13,6 +13,7 @@ using CefSharp.Wpf.Example.ViewModels;
 using Microsoft.Win32;
 using System.Collections.Generic;
 using System.Windows.Threading;
+using System.Windows.Controls;
 
 namespace CefSharp.Wpf.Example
 {
@@ -194,18 +195,11 @@ namespace CefSharp.Wpf.Example
             var browserViewModel = BrowserTabs[TabControl.SelectedIndex];
             Cef.UIThreadTaskFactory.StartNew(() =>
             {
-                var requestContext = new RequestContext(new RequestContextSettings() { CachePath = "cache" });
-                var preferences = requestContext.GetAllPreferences(true);
-                var spellCheck = (Dictionary<string, object>)preferences["spellcheck"];
-                spellCheck["use_spelling_service"] = !(bool)spellCheck["use_spelling_service"];
-
+                var requestContext = browserViewModel.WebBrowser.GetBrowser().GetHost().RequestContext;
+                var useSpellingService = (bool)requestContext.GetPreference("spellcheck.use_spelling_service");
+                
                 string error = null;
-                var preference = requestContext.GetPreference("enable_do_not_track");
-                var preference2 = requestContext.GetPreference("spellcheck");
-
-                var hasPreference = requestContext.CanSetPreference("spellcheck");
-                var canSetPreference = requestContext.CanSetPreference("spellcheck");
-                requestContext.SetPreference("spellcheck", spellCheck, out error);
+                var success = requestContext.SetPreference("spellcheck.use_spelling_service", !useSpellingService, out error);
             });
         }
     }
